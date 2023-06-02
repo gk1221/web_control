@@ -1,0 +1,16 @@
+//------------------------------------------------------------------------------------------
+if(window.XMLHTTPRequest) {	//FireFox,Mozilla,Opera 8.0+,Safari,...
+	http_request = new XMLHTTPRequest();
+} else	if(window.ActiveXObject) {	//IE
+	try{	//·sª©IE
+		http_request = new ActiveXObject("Msxml2.XMLHTTP");
+	}
+	catch(e) {
+		try {	//ÂÂª©IE
+			http_request = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		catch(e) {}
+	}
+
+}
+//-----------------------------------------------------------------------------------------

@@ -1,0 +1,123 @@
+'Xno,Yno:Block之長與寬,目前無作用
+Sub Area_Data(Block,Xno,Yno,Area)	'Block之說明
+	select case Block
+	case "A"
+		Xno=10 : Yno=14
+		Area="前機房第一區"
+	case "B"
+		Xno=10 : Yno=6
+		Area="前機房第二區"
+	case "C"
+		Xno=10 : Yno=9
+		Area="前機房第三區"
+	case "D"
+		Xno=27 : Yno=17
+		Area="第一機房HPC專區"
+	case "E"
+		Xno=19 : Yno=7
+		Area="第一機房作業機櫃區"
+	case "F"
+		Xno=19 : Yno=6
+		Area="第一機房網路機櫃區"
+	case "G"
+		Xno=25 : Yno=6
+		Area="第二機房中心機櫃區"
+	case "H"
+		Xno=25 : Yno=5
+		Area="第二機房外單位機櫃區"
+	case "I"
+		Xno=25 : Yno=7
+		Area="第二機房磁帶館區"
+	case else
+		Xno=0 : Yno=0
+		Area="機房外圍區域"
+	end select
+End Sub
+sub All_Trans(Block,pos_X,pos_Y,Xall,Yall,Area)	'區域坐標->全區坐標
+  if pos_X<1 or pos_Y<1 then
+		Xall=pos_X
+		Yall=pos_Y
+  else
+	select case block
+	case "A"
+		Xall=pos_X
+		Yall=pos_Y
+	case "B"
+		Xall=pos_X
+		Yall=pos_Y+11
+	case "C"
+		Xall=pos_X
+		Yall=pos_Y+20
+	case "D"
+		Xall=pos_X+10
+		Yall=pos_Y
+	case "E"
+		Xall=pos_X+10
+		Yall=pos_Y+17
+	case "F"
+		Xall=pos_X+10
+		Yall=pos_Y+23
+	case "G"
+		Xall=pos_X+41
+		Yall=pos_Y+17
+	case "H"
+		Xall=pos_X+41
+		Yall=pos_Y+22
+	case "I"
+		Xall=pos_X+48
+		Yall=pos_Y+11
+	case else
+		Xall=-1
+		Yall=-1
+	end select	
+  end if
+	
+  call Area_Data(Block,0,0,Area)	
+End Sub
+
+sub Area_Trans(Xall,Yall,Block,pos_X,pos_Y,Area,Xno,Yno)	'全區坐標->區域坐標
+	Xall=Xall-2  
+	
+	if Xall>=1 and Xall<=10 and Yall>=1 and Yall<=11 then		'A
+		Block="A"
+		pos_X=Xall
+		pos_Y=Yall
+	elseif Xall>=1 and Xall<=10 and Yall>=12 and Yall<=20 then	'B
+		Block="B"
+		pos_X=Xall
+		pos_Y=Yall-11
+	elseif Xall>=1 and Xall<=10 and Yall>=21 and Yall<=29 then	'C
+		Block="C"
+		pos_X=Xall
+		pos_Y=Yall-20
+	elseif Xall>=11 and Xall<=37 and Yall>=1 and Yall<=17 then	'D
+		Block="D"
+		pos_X=Xall-10
+		pos_Y=Yall
+	elseif Xall>=11 and Xall<=29 and Yall>=18 and Yall<=23 then	'E
+		Block="E"
+		pos_X=Xall-10
+		pos_Y=Yall-17
+	elseif Xall>=11 and Xall<=29 and Yall>=24 and Yall<=29 then	'F
+		Block="F"
+		pos_X=Xall-10
+		pos_Y=Yall-23
+	elseif Xall>=41 and Xall<=65 and Yall>=18 and Yall<=22 then	'G
+		Block="G"
+		pos_X=Xall-40
+		pos_Y=Yall-17
+	elseif Xall>=41 and Xall<=65 and Yall>=23 and Yall<=29 then	'H
+		Block="H"
+		pos_X=Xall-40
+		pos_Y=Yall-22
+	elseif Xall>=41 and Xall<=65 and Yall>=12 and Yall<=17 then	'I
+		Block="I"
+		pos_X=Xall-40
+		pos_Y=Yall-11
+	else
+		Block="Z"
+		pos_X=-1
+		pos_Y=-1
+	end if
+	call Area_Data(Block,Xno,Yno,Area)
+End Sub

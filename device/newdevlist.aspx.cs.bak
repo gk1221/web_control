@@ -1,0 +1,225 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Web.Services;
+using System.Text;
+public partial class Device_DevEdit : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        
+        
+        if (!IsPostBack)
+        {
+            
+                  
+        }
+    }
+
+    protected void Page_PreRenderComplete(object sender, EventArgs e)   //放Page_Load無法顯示
+    {
+       
+    
+    }
+
+    protected static string f1 (){
+        return null;
+    }
+
+    protected static string Button_check(string IO)
+    {
+        if (IO == "I") {
+                return("移入");//in
+             }
+             else if (IO == "O") {
+                return("移出");//out
+             }
+             else if (IO == "N") {
+                return("更換");//change
+             }
+             else {
+                return("其它");//other
+             }
+    }
+
+    protected static string OP_split(string op){
+        string[] sub = op.Split();
+        string re = "";
+        foreach (var item in sub) 
+        {
+            try{
+                re += " " + item[0] ;
+            }
+            catch (System.Exception)
+            {
+            }                
+        }
+        
+        return re;
+    }
+/*
+    [WebMethod]
+    public static string Get_Json()
+    {
+        SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["ControlConnectionString"].ConnectionString);
+        Conn.Open();
+        
+		SqlCommand cmd = new SqlCommand(@"SELECT TOP (1500) [DevID]
+                                        ,convert(varchar, CreateDate, 111) as CreateDate
+                                        ,[HostName]
+                                        ,[HostClass]
+                                        ,[Repair]
+                                        ,[IO]
+                                        ,[Functions]
+                                        ,[Memo]
+                                        ,[PS]
+                                        ,[StaffName]
+                                        ,[Hw]
+                                        ,[Sw]
+                                        ,[OP]
+                                        ,[Xall]
+                                        ,[Yall]
+                                        ,[UpdateDate]
+                                        FROM [control].[dbo].[Device2]
+                                        ORDER BY DevID DESC", Conn);
+        SqlDataReader dr = null;
+        dr = cmd.ExecuteReader();
+
+        int count = 1500;
+        
+        
+        string out_s="[";
+        //string out_s="\"data\": [";
+        while(dr.Read())
+        {
+            if(count==1){
+                SqlConnection Conn2 = new SqlConnection(WebConfigurationManager.ConnectionStrings["IDMSConnectionString"].ConnectionString);
+                Conn2.Open();
+                SqlCommand cmd2 = new SqlCommand(@"SELECT 區域名稱,定位名稱 FROM 定位設定 WHERE 坐標X=@X AND 坐標Y=@Y", Conn2);
+                cmd2.Parameters.AddWithValue("X", dr[13].ToString() );
+                cmd2.Parameters.AddWithValue("Y", dr[14].ToString() );
+                SqlDataReader dr2 = null;
+                dr2 = cmd2.ExecuteReader();
+                if(dr2.Read()){
+                    out_s += "{\"CreateDate\":\"" + dr[1].ToString()+
+                        "\",\"ID\":\"" +  dr[0].ToString() +
+                        "\",\"HostName\":\"" +  dr[2].ToString() +
+                        "\",\"HostClass\":\"" + dr[3].ToString() +
+                        "\",\"Functions\":\"" + dr[6].ToString() +
+                        "\",\"HW\":\"" + dr[10].ToString() +
+                        "\",\"StaffName\":\"" + dr[9].ToString() +
+                        "\",\"IO\":\"" + Button_check(dr[5].ToString()) +
+                        "\",\"Xall\":\"" + dr2[0].ToString() + dr2[1].ToString() +
+                        "\",\"OP\":\"" + OP_split(dr[12].ToString()) +
+                        //"\",\"url\":\"" + "<a href=\'"+ dr[6].ToString() +"\'></a>" +
+                         "\"}";
+                }
+                
+                cmd2.Cancel(); cmd2.Dispose(); dr2.Close(); Conn2.Close(); Conn2.Dispose();
+            }
+            else{
+                SqlConnection Conn2 = new SqlConnection(WebConfigurationManager.ConnectionStrings["IDMSConnectionString"].ConnectionString);
+                Conn2.Open();
+                SqlCommand cmd2 = new SqlCommand(@"SELECT 區域名稱,定位名稱 FROM 定位設定 WHERE 坐標X=@X AND 坐標Y=@Y", Conn2);
+                cmd2.Parameters.AddWithValue("X", dr[13].ToString() );
+                cmd2.Parameters.AddWithValue("Y", dr[14].ToString() );
+                SqlDataReader dr2 = null;
+                dr2 = cmd2.ExecuteReader();
+                if(dr2.Read()){
+                    out_s += "{\"CreateDate\":\"" + dr[1].ToString()+
+                        "\",\"ID\":\"" +  dr[0].ToString() +
+                        "\",\"HostName\":\"" +  dr[2].ToString() +
+                        "\",\"HostClass\":\"" + dr[3].ToString() +
+                        "\",\"Functions\":\"" + dr[6].ToString() +
+                        "\",\"HW\":\"" + dr[10].ToString() +
+                        "\",\"StaffName\":\"" + dr[9].ToString() +
+                        "\",\"IO\":\"" + Button_check(dr[5].ToString()) +
+                        "\",\"Xall\":\"" + dr2[0].ToString() + dr2[1].ToString() +
+                        "\",\"OP\":\"" + OP_split(dr[12].ToString()) +
+                        //"\",\"url\":\"" + "<a href=\' "+dr[6].ToString() +"\'></a>" +
+                        "\"},";
+                }
+                
+                cmd2.Cancel(); cmd2.Dispose(); dr2.Close(); Conn2.Close(); Conn2.Dispose();
+            }
+            count -= 1;
+            
+        }
+        
+
+        return out_s;
+    }
+*/
+    public static string Get_Json()
+    {
+        SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["ControlConnectionString"].ConnectionString);
+        Conn.Open();
+        string sql = "SELECT COUNT(*) FROM Device2";
+
+		SqlCommand cmd = new SqlCommand(sql,Conn);
+        SqlDataReader dr = null;
+        dr = cmd.ExecuteReader();
+        int count = 0;
+        if(dr.Read()){
+            count = int.Parse(dr[0].ToString());
+        }
+        
+       
+        cmd.CommandText = @"SELECT  [DevID]
+                ,convert(varchar, CreateDate, 111) as CreateDate
+                ,[HostName]
+                ,[HostClass]                                        
+                ,[IO]
+                ,RTRIM([Functions]
+                ,[StaffName]
+                ,[Hw]                                        
+                ,[OP]
+                ,ISNULL(w.區域名稱, '定位錯誤') as ar
+				,ISNULL(w.定位名稱, '') as lo
+                FROM [control].[dbo].[Device2] d left join [IDMS].dbo.定位設定 w 
+                ON d.Xall=w.坐標X AND d.Yall=w.坐標Y
+                where 定位方式='坐標' or 定位方式 is null
+                ";
+        dr.Close();
+        dr = cmd.ExecuteReader();
+      
+        //string out_s="[";
+        StringBuilder myStringBuilder = new StringBuilder("[");
+        //string out_s="\"data\": [";
+        //while(dr.Read())
+        while(dr.Read() & count>0)
+        {          
+            myStringBuilder.Append( "{\"CreateDate\":\"" + dr[1].ToString()+
+                "\",\"ID\":\"" +  dr[0].ToString() +
+                "\",\"HostName\":\"" +  dr[2].ToString() +
+                "\",\"HostClass\":\"" + dr[3].ToString() +
+                "\",\"Functions\":\"" + dr[5].ToString() +
+                "\",\"HW\":\"" + dr[7].ToString() +
+                "\",\"StaffName\":\"" + dr[6].ToString() +
+                "\",\"IO\":\"" + Button_check(dr[4].ToString()) +
+                "\",\"Xall\":\"" + dr[9].ToString() + "<br>" + dr[10].ToString() +
+                "\",\"OP\":\"" + OP_split(dr[8].ToString())  );              
+            
+            //myStringBuilder.Append("{\"CreateDate\":\"2004/01/16\",\"ID\":\"1\",\"HostName\":\"cwbftl\",\"HostClass\":\"主機\",\"Functions\":\"VPP5000 console\",\"HW\":\"詹國華\",\"StaffName\":\"詹國華\",\"IO\":\"更換\",\"Xall\":\"HPC專區<br>(24,2)\",\"OP\":\"鄭 柯 " );
+            
+            if(count==1){
+                myStringBuilder.Append( "\"}" );
+                
+            }
+            else{
+                myStringBuilder.Append( "\"}," );
+            }
+            count -= 1;        
+        }        
+        cmd.Cancel(); cmd.Dispose(); dr.Close(); Conn.Close(); Conn.Dispose();
+        return myStringBuilder.ToString();
+    }
+
+    
+}

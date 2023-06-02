@@ -1,0 +1,74 @@
+Function DT(byval sDT,byval fDT) 'if..then..後不可再加 : ,不可多行敘述
+  DT=lcase(fDT)
+  YY=year(sDT)   : if instr(1,DT,"yy",1)>0 and instr(1,DT,"yyyy",1)=0 then YY=mid(YY,3)
+  DT=replace(replace(DT,"yyyy","yy"),"yy",YY)
+  MM=month(sDT)  : if MM<10 then MM="0" & MM
+  DT=replace(DT,"mm",MM)
+  DD=day(sDT)    : if DD<10 then DD="0" & DD
+  DT=replace(DT,"dd",DD)
+  HH=hour(sDT)   : if HH<10 then HH="0" & HH
+  DT=replace(DT,"hh",HH)
+  MI=minute(sDT) : if MI<10 then MI="0" & MI
+  DT=replace(DT,"mi",MI)
+  SS=second(sDT) : if SS<10 then SS="0" & SS
+  DT=replace(DT,"ss",SS) 
+End Function
+
+Function DelHT(byval HT)	'去字串頭尾分號,用於DataTogether.asp,head.asp
+	if trim(HT) <>"" then DelHT=replace(replace(trim(HT),";;",";"),",,",",")
+	if DelHT<>"" then
+		if mid(DelHT,1,1)=";" or mid(DelHT,1,1)="," then
+			if DelHT=";" or DelHT=","  then 
+				DelHT=""
+			else
+				DelHT=trim(mid(DelHT,2))
+			end if
+		end if
+	end if
+	if DelHT<>"" then		
+		if mid(DelHT,len(DelHT))=";" or mid(DelHT,len(DelHT))="," then
+			if DelHT=";" or DelHT="," then 
+				DelHT=""
+			else
+				DelHT=trim(mid(DelHT,1,len(DelHT)-1))
+			end if
+		end if		
+	end if
+End Function
+
+function SQL_format(byval YN,byval SQLPart,byval SQLFull) 'SQL加括號以合併
+	if SQLPart<>"" then
+		select case YN
+		case "and"
+			if SQLFull<>"" then
+				SQL_format=SQLFull & " and (" & SQLPart & ")"
+			else
+				SQL_format="(" & SQLPart & ")"
+			end if
+		case "or"
+			if SQLFull<>"" then
+				SQL_format=SQLFull & " or " & SQLPart
+			else
+				SQL_format=SQLPart
+			end if
+		end select
+	else
+		SQL_format=SQLFull
+	end if
+end function
+
+function strSQL_Create(byval hosts,byval strs)	'產生字串搜尋之SQL
+	strA =Split(strs, ";", -1, 1)
+	hostA=Split(hosts, ";", -1, 1)
+	for j=0 to UBound(strA)		
+		for i=0 to UBound(hostA)
+			if strSQL="" then
+				strSQL=hostA(i) & " like  '$" & strA(j) & "$'"
+			else
+				strSQL=strSQL & " or " & hostA(i) & " like  '$" & strA(j) & "$' "
+			end if
+		next
+		strSQL_Create=SQL_format("and",strSQL,strSQL_Create)
+		strSQL=""
+	next
+end function

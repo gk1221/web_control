@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>	
+	<title>門禁選單</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=big5" />
+<style>
+.menu {
+	display: block;
+	position: relative;		
+}
+
+.menubtn {	
+	background-color: #6699CC;  
+	border-width: 0;
+	color: white;	
+	font-family:標楷體;
+	font-size: 16px;
+	min-width: 130px;
+	padding-left:10px;  
+	padding-right:10px; 
+	padding-top:10px; 
+	padding-bottom:10px;	
+}
+
+.menucontent {
+	background-color: #6699ff;
+	display: none;
+	font-family: 標楷體;
+	font-size: 16px;
+	min-width: 120px;
+	padding-left:3px;  
+	padding-right:3px; 
+	padding-top:3px; 
+	padding-bottom:3px;
+	position: relative;		
+}
+
+.menucontent a {
+	color: black;
+	display: block;	
+	padding-left:10px;  
+	padding-right:10px; 
+	padding-top:10px; 
+	padding-bottom:10px;  
+	text-decoration: none;
+}
+
+.menu:hover .menubtn {background-color: #003399;}
+.menu:hover .menucontent {display: block;}
+.menucontent a:hover {background-color: #DFEFFF;}
+.fix_menubtn_click {background-color: #003399;}
+.fix_menucontent_show {display: block;}
+</style>
+</head>
+<body style="background:#6699ff">
+<table id="tblMenu" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr align="center"><td>
+	<div class="menu">
+	  <button class="menubtn" id="menubtn_people" onclick="myMenubtnClickFunc('menubtn_people', 'menucontent_people')">人員進出</button>
+	  <div class="menucontent" id="menucontent_people">
+		<a href="people/rapidly.asp" target="body">快速登入</a>
+		<a href="people/people.asp?IO=I" target="body">人員登入</a>
+		<a href="people/today.asp" target="body">今日紀錄</a>
+		<a href="people/history.asp" target="body">歷史查詢</a>
+		<a href="Config/Config.asp?which=people" target="body">系統設定</a>
+		<a href="file://10.6.1.11/d/機房行政/門禁資料/授權人員名單.xlsx" target="body">授權清冊</a>
+		<a href="file://10.6.1.11/d/機房行政/門禁資料/進場名單_revised.xls" target="body">進場名單</a>
+		<a href="file://10.6.1.11/d/機房行政/門禁資料/照片檔.xls" target="body">照片檔</a>		
+	  </div>
+	</div>
+</td></tr>
+<tr align="center"><td>
+	<div class="menu">
+	  <button class="menubtn" id="menubtn_dev" onclick="myMenubtnClickFunc('menubtn_dev', 'menucontent_dev')">設備異動</button>
+	  <div class="menucontent" id="menucontent_dev">
+		<a href="device/device.asp" target="body">資料建檔</a>
+		<a href="device/List.asp" target="body">每月查詢</a>
+		<a href="device/search.asp" target="body">進階查詢</a>
+		<a href="Config/Config.asp?which=device" target="body">系統設定</a>
+	  </div>
+	</div>
+</td></tr>
+
+<script>
+function myMenubtnClickFunc(menubtn_id, menucontent_id) {
+	//document.getElementById(menubtn_id).classList.toggle("fix_menubtn_click");
+	//document.getElementById(menucontent_id).classList.toggle("fix_menucontent_show");
+	myToggle(document.getElementById(menubtn_id), "fix_menubtn_click");
+	myToggle(document.getElementById(menucontent_id), "fix_menucontent_show");
+}
+
+function myToggle(element, toggle_name) {
+	if (element.className == "") {
+		element.className = toggle_name;
+		return;
+	}
+	
+	var names = element.className.split(" ");			
+	var indx = -1;
+	for (var i = 0, j = names.length; i < j; i++) {
+		if (names[i] === toggle_name) {
+			indx = i;
+			break;
+		}
+	}
+	
+	if (indx >= 0) {
+		names.splice(indx, 1);
+		element.className = names.join(" ");		
+	} else { 
+		element.className += (" " + toggle_name);			
+	}		
+}
+</script>
+</body>
+</html>

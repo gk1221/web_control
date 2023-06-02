@@ -1,0 +1,209 @@
+<!-- #include file="..\..\connDB\conn.ini" -->
+<!-- #include file="..\..\Lib\GetID.inc" -->
+<%
+Dim conn  : Set conn=Server.CreateObject("ADODB.Connection")  : conn.Open strControl
+set rs=server.createobject("ADODB.recordset")
+
+Function DT(byval sDT,byval fDT)
+  DT=lcase(fDT)
+  YY=year(sDT)   : if instr(1,DT,"yy",1)>0 and instr(1,DT,"yyyy",1)=0 then YY=mid(YY,3)
+  DT=replace(replace(DT,"yyyy","yy"),"yy",YY)
+  MM=month(sDT)  : if MM<10 then MM="0" & MM
+  DT=replace(DT,"mm",MM)
+  DD=day(sDT)    : if DD<10 then DD="0" & DD
+  DT=replace(DT,"dd",DD)
+  HH=hour(sDT)   : if HH<10 then HH="0" & HH
+  DT=replace(DT,"hh",HH)
+  MI=minute(sDT) : if MI<10 then MI="0" & MI
+  DT=replace(DT,"mi",MI)
+  SS=second(sDT) : if SS<10 then SS="0" & SS
+  DT=replace(DT,"ss",SS) 
+End Function
+%>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=big5" />
+	<title>歷史查詢</title>
+    <style type="text/css">
+	<!--
+	body {
+	background-repeat: repeat;
+	margin: 0px;
+	line-height: 100%;
+	background-color: #99CC66
+		}
+	-->
+	</style>
+	<link href="Lib/people.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+<p align="center" class="title">機房進出人員歷史紀錄查詢</p>
+<form name="form">
+  <p>進入日期 ： 
+  	<select size="1" name="selYYYY">      
+    <%  response.write "<option></option>"
+		for i=cint(DT(now,"yyyy"))-4 to cint(DT(now,"yyyy"))
+			response.write "<option value='" & i & "'>" & i & "</option>"
+		next
+	%>
+    </select>年　
+  	<select size="1" name="selMM">
+    <%  response.write "<option></option>"
+		for i=1 to 12
+			if i>9 then
+				response.write "<option value='" & i & "'>" & i & "</option>"
+			else
+				response.write "<option value='0" & i & "'>0" & i & "</option>"
+			end if
+		next
+	%>
+    </select>月
+  </p>
+  <p>搜尋字串 ：<input type="text" name="txtFull" size="15">　
+  	<font size="2" color="#CC6600">(對所有文字欄位比對字串是否符合，空白隔開搜尋字串可做and比對，填
+  	&quot;<font color="red"><u onclick="txtFull.value='其它登入'">其它登入</u></font>&quot; 
+    即可列出未依規定登入紀錄)</font>
+  </p> 
+  <p>負責人 ：       
+  　<select size="1" name="selUnit">      
+    <%  response.write "<option></option>"
+		rs.open "select distinct 負責人 from people",conn
+		while not rs.eof
+			if trim(rs(0))<>"" then response.write "<option value='" & rs(0) & "'>" & rs(0) & "</option>"
+			rs.movenext
+		wend
+		rs.close
+	%>
+    </select>
+  </p> 
+  <p>隨身碟 ：       
+  　<select size="1" name="selUSB">      
+    <%  response.write "<option></option>"
+		rs.open "select Item from Config where Kind='隨身碟' order by Content",conn
+		while not rs.eof
+			response.write "<option value='" & rs(0) & "'>" & rs(0) & "</option>"
+			rs.movenext
+		wend
+		rs.close
+	%>
+    </select>
+  </p>
+  <p>人數 ：       
+  　<select size="1" name="selAmount">      
+  		<option></option>
+  		<option value="=1">等於1人</option>
+  		<option value="=2">等於2人</option>
+  		<option value=">1">大於1人</option>
+  		<option value=">2">大於2人</option>
+    </select>
+  </p>
+  <p>
+  	<input type="button" value="　紀　錄　查　詢　" name="cmdLog"  onClick="HistoryOK('report.asp');">　
+  	<input type="button" value="　時　數　統　計　" name="cmdTime" onClick="HistoryOK('time.asp');">&nbsp;
+  	<input type="hidden" name="SQL">
+  </p>
+</form>
+</body>
+</html>
+<script language="vbscript">
+Sub HistoryOK(which)
+	'*******************日期搜尋****************************************
+	if form.selYYYY.value="" and form.selMM.value="" then
+		SQLdate=""
+	elseif form.selYYYY.value<>"" and form.selMM.value="" then
+		SQLdate="進入日期 like '" & form.selYYYY.value & "/__/__'"
+	elseif form.selYYYY.value="" and form.selMM.value="" then
+		SQLdate="進入日期 like '____/" & form.selMM.value & "/__'"
+	else
+		SQLdate="進入日期 like '" & form.selYYYY.value & "/" & form.selMM.value & "/__'"
+	end if
+	if SQLdate<>"" then SQL=SQL_format("and",SQLdate,SQL)
+	'*******************字串搜尋****************************************
+	Fulls="申請單位 申請人 負責單位 負責人 目的 攜入物品 處理過程 攜出物品 攜出原因 附註 值班人員1 值班人員2 區域"
+	if trim(form.txtFull.value)<>"" then SQL=SQL_format("and",strSQL_Create(Fulls,DelHT(trim(form.txtFull.value))), SQL)	
+	'*******************負責人****************************************
+	if form.selUnit.value<>"" then SQL=SQL_format("and","負責人='" & form.selUnit.value & "'",SQL)
+	'*******************隨身碟****************************************
+	if form.selUSB.value<>"" then SQL=SQL_format("and","隨身碟='" & form.selUSB.value & "'",SQL)
+	'*******************人數****************************************
+	if form.selAmount.value<>"" then SQL=SQL_format("and","人數" & form.selAmount.value,SQL)
+	'********************執行搜尋****************************************************
+	if SQL<>"" then
+		form.target="_blank"
+		form.action=which
+		form.SQL.value=SQL
+		form.submit
+		'msgbox SQL
+	else	'全部空白不搜尋
+		msgbox "查詢條件不足,請輸入查詢條件 !",48
+	end if
+End Sub
+
+function SQL_format(byval YN,byval SQLPart,byval SQLFull) 'SQL加括號以合併
+	if SQLPart<>"" then
+		select case YN
+		case "and"
+			if SQLFull<>"" then
+				SQL_format=SQLFull & " and (" & SQLPart & ")"
+			else
+				SQL_format="(" & SQLPart & ")"
+			end if
+		case "or"
+			if SQLFull<>"" then
+				SQL_format=SQLFull & " or " & SQLPart
+			else
+				SQL_format=SQLPart
+			end if
+		end select
+	else
+		SQL_format=SQLFull
+	end if
+end function
+
+function strSQL_Create(byval hosts,byval strs)	'產生字串搜尋之SQL
+	strA =Split(strs, " ", -1, 1)
+	hostA=Split(hosts, " ", -1, 1)
+	for j=0 to UBound(strA)		
+		for i=0 to UBound(hostA)
+			if strSQL="" then
+				strSQL=hostA(i) & " like  '$" & strA(j) & "$'"
+			else
+				strSQL=strSQL & " or " & hostA(i) & " like  '$" & strA(j) & "$' "
+			end if
+		next
+		strSQL_Create=SQL_format("and",strSQL,strSQL_Create)
+		strSQL=""
+	next
+end function
+
+Function DelHT(byval HT)	'去字串頭尾分號,用於DataTogether.asp,head.asp
+	if trim(HT) <>"" then DelHT=replace(replace(trim(HT),";;",";"),",,",",")
+	if DelHT<>"" then
+		if mid(DelHT,1,1)=";" or mid(DelHT,1,1)="," then
+			if DelHT=";" or DelHT=","  then 
+				DelHT=""
+			else
+				DelHT=trim(mid(DelHT,2))
+			end if
+		end if
+	end if
+	if DelHT<>"" then		
+		if mid(DelHT,len(DelHT))=";" or mid(DelHT,len(DelHT))="," then
+			if DelHT=";" or DelHT="," then 
+				DelHT=""
+			else
+				DelHT=trim(mid(DelHT,1,len(DelHT)-1))
+			end if
+		end if		
+	end if
+End Function
+
+Sub txtFull_onKeyPress
+	select case window.event.keycode
+	case 39,44,34,124 ' [']   [,]   ["]   [|]
+		window.event.keycode=0
+	end select
+End Sub
+</script>

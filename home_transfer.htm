@@ -1,0 +1,22 @@
+<html>
+<head>	
+	<title>連接至更新版頁面</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=big5" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="background:#DFEFFF;" onload="myLinkFunc()">
+載入中...
+</body>
+</html>
+
+<script language="javascript">
+var strConfirmText = "此功能可由使用者自訂於更新版頁面選單 > 人員進出 > 快捷功能 點選開啟。\n\n是否前往更新版頁面？";
+
+function myLinkFunc(){
+	if (confirm(strConfirmText)) {
+		window.open("home2.htm", "_parent");
+	} else {
+		window.history.go(-1);
+	}
+}
+</script>

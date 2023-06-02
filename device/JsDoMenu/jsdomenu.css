@@ -1,0 +1,46 @@
+.jsdomenudiv {
+	background-color: #CCCCCC;
+	border: outset;
+	border-bottom-color: #000000;
+	border-left-color: #FFFFFF;
+	border-right-color: #000000;
+	border-top-color: #FFFFFF;
+	cursor: default;
+	position: absolute;
+	visibility: hidden;
+	z-index: 10;
+}
+
+.jsdomenuitem {
+	background-color: #CCCCCC;
+	border: none;
+	color: #000000;
+	font-family: sans, Verdana, Geneva, Arial, sans-serif;
+	font-size: 12px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	padding-right: 15px;
+	padding-top: 2px;
+	position: relative; /* Do not alter this line! */
+}
+
+.jsdomenuitemover {
+	background-color: #000099;
+	border: none;
+	color: #FFFFFF;
+	font-family: sans, Verdana, Geneva, Arial, sans-serif;
+	font-size: 12px;
+	padding-bottom: 2px;
+	padding-left: 10px;
+	padding-right: 15px;
+	padding-top: 2px;
+	position: relative; /* Do not alter this line! */
+}
+
+.jsdomenusep {
+}
+
+.jsdomenusep hr {
+	text-align: center;
+	width: 95%;
+}
