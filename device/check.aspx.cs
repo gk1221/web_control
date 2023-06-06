@@ -93,8 +93,10 @@ public partial class Check_list : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@co", context.Text);
             cmd.Parameters.AddWithValue("@ch", TF.SelectedValue);
             cmd.Parameters.AddWithValue("@dl", deadline.Text);
-
+       
             cmd.ExecuteNonQuery();
+       
+            
            
         }
     }
