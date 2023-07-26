@@ -67,7 +67,7 @@ public partial class Device_DevEdit : System.Web.UI.Page
             myStringBuilder.Append( "{\"LifeID\":\"" + dr[0].ToString()+
                 "\",\"Type\":\"" +  dr[1].ToString() +
                 "\",\"controlID\":\"" +  dr[2].ToString() +
-                "\",\"Action\":\"" + dr[3].ToString() +
+                "\",\"Action\":\"" + dr[3].ToString().Replace("\""," ") +
                 "\",\"OP\":\"" + dr[4].ToString() +
                 "\",\"Time\":\"" + dr[5].ToString() +
                 "\",\"IP\":\"" + dr[6].ToString()
