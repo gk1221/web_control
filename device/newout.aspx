@@ -17,6 +17,9 @@
             body {
                 margin: 0px 5px 0 5px;
             }
+            h5{
+                margin-bottom: 0px;
+            }
             
             #table_id {
                 max-width: 100%!important;
@@ -41,11 +44,11 @@
             }
             
             .head10 {
-                width: 44px;
+                width: 10px;
             }
             
             .head9 {
-                width: 60px;
+                width: 80px;
             }
             
             .head8 {
@@ -53,11 +56,11 @@
             }
             
             .head7 {
-                width: 56px;
+                width: 200px;
             }
             
             .head6 {
-                width: 200px;
+                width: 40px;
             }
             
             .head5 {
@@ -73,7 +76,7 @@
             }
             
             .head2 {
-                width: 50px;
+                width: 40px;
             }
             
             .head1 {
@@ -119,15 +122,7 @@
 
                 for (var i = 0; i < myList.length; i++) {
                     var rowHash = myList[i];
-                    /*
-                                        for(var j=0; j<rowHash.length; j++) {
-                                            if($.inArray(rowHash[j], columnSet) == -1){
-                                                columnSet.push(rowHash[j]);
-                                                headerTr$.append($('<th />').html(rowHash[j]));
-                                            }
-                                        }
-
-                     */
+           
                     var counter = 10;
                     for (var key in rowHash) {
                         console.log(rowHash);
@@ -168,6 +163,7 @@
                 document.getElementsByClassName('title')[0].innerHTML = ot.innerHTML;
             }
         </script>
+        <h5 style="text-align: right;">*打V代表已收到設備移入單;X為尚未繳交設備移入單</h5>
         <table id="excelDataTable" border="1">
 
 

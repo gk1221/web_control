@@ -22,6 +22,10 @@ MaintainScrollPositionOnPostback="true" Debug="true" %>
         .mydisable{
             color: #9d9d9d;
         }
+        .list{
+          height: 600px;
+          overflow: auto;
+        }
     </style>
     <script>
       var data = '<%=Get_Json()%>';
@@ -121,7 +125,7 @@ MaintainScrollPositionOnPostback="true" Debug="true" %>
   <body>
     <form runat="server">
         <div class="d-flex flex-column align-items-center ">
-            <div class="list-group w-60 mt-lg-3" id="checklist" role="tablist">
+            <div class="list-group w-60 mt-lg-3 list" id="checklist" role="tablist">
               
             </div>
             <asp:TextBox  ID="checkID" aria-label="ID" runat="server" class="invisible"></asp:TextBox>

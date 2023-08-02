@@ -33,7 +33,7 @@ public partial class Check_list : System.Web.UI.Page
     {
         SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["ControlConnectionString"].ConnectionString);
         Conn.Open();
-        string sql = "SELECT COUNT(*) FROM [control_dev2].[dbo].[Check]";
+        string sql = "SELECT COUNT(*) FROM [dbo].[Check]";
 
 		SqlCommand cmd = new SqlCommand(sql,Conn);
         SqlDataReader dr = null;
@@ -50,7 +50,7 @@ public partial class Check_list : System.Web.UI.Page
                             , CONVERT(VARCHAR(16), deadline, 120) AS formatted_datetime
                             ,[context]
                             FROM [dbo].[Check]
-                            ORDER BY [check] asc, formatted_datetime asc
+                            ORDER BY [check] asc, formatted_datetime desc
                 ";
         dr.Close();
         dr = cmd.ExecuteReader();

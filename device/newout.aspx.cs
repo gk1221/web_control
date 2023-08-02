@@ -94,10 +94,12 @@ public partial class Device_DevEdit : System.Web.UI.Page
         return Addition_s ;        
     }
 //資料庫的進出轉成文字
-    protected static string Button_check(string IO)
+    protected static string Button_check(string IO, string PS)
     {
         if (IO == "I") {
-                return("移入");//in
+                if(PS == "需填移入單") return("移入(X)");//in
+                else if(PS == "已填移入單") return("移入(V)");
+                else return("移入");
              }
              else if (IO == "O") {
                 return("移出");//out
@@ -106,9 +108,12 @@ public partial class Device_DevEdit : System.Web.UI.Page
                 return("更換");//change
              }
              else {
+                if(PS == "需填移入單") return("其它(X)");//in
+                else if(PS == "已填移入單") return("其它(V)");
                 return("其它");//other
              }
     }
+
 //取得OP的姓
     protected static string OP_split(string op){
         string[] sub = op.Split();
@@ -129,7 +134,7 @@ public partial class Device_DevEdit : System.Web.UI.Page
     {
         SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["ControlConnectionString"].ConnectionString);
         Conn.Open();
-        string sql = "SELECT COUNT(*) FROM [control].[dbo].[Device2] WHERE Year(CreateDate)=@YYY AND MONTH(CreateDate)=@MMM";
+        string sql = "SELECT COUNT(*) FROM [dbo].[Device2] WHERE Year(CreateDate)=@YYY AND MONTH(CreateDate)=@MMM";
         SqlCommand cmd = new SqlCommand(sql, Conn);
         string[] YYMM = new string[3];
         YYMM = Request["Time"].Split('/');
@@ -144,23 +149,26 @@ public partial class Device_DevEdit : System.Web.UI.Page
         dr = cmd.ExecuteReader();
         int count = 0;
         
-        if(dr.Read()) count = int.Parse(dr[0].ToString());
+        //if(dr.Read()) count = int.Parse(dr[0].ToString());
+        if (dr.Read() && dr.FieldCount > 0) count = int.Parse(dr[0].ToString());
+
         
         cmd.CommandText = @"SELECT
                             convert(varchar, CreateDate, 111) as CreateDate
                             ,[HostName]
                             ,[HostClass]
-                            ,[Repair]  
+                            ,[PS]  
                             ,[Functions]
                             ,[Hw]  
                             ,[StaffName]                                  
                             ,[IO]                                                                               
                             ,CONCAT(w.區域名稱,'<br>', w.定位名稱) as area                                                                                 
-                            ,[OP]                                                                              
-                            FROM [control].[dbo].[Device2] d left join [IDMS].dbo.定位設定 w 
+                            ,[OP]
+                                                                                                      
+                            FROM [dbo].[Device2] d left join [IDMS].dbo.定位設定 w 
                             ON d.Xall=w.坐標X2 AND d.Yall=w.坐標Y2 AND 定位方式='坐標'
                             WHERE Year(CreateDate)=@YYY AND MONTH(CreateDate)=@MMM
-                            ORDER BY DevID DESC";
+                            ORDER BY CreateDate DESC";
         dr.Close();
         dr = cmd.ExecuteReader();
         StringBuilder out_s=new StringBuilder("[");
@@ -171,15 +179,15 @@ public partial class Device_DevEdit : System.Web.UI.Page
         return out_s.ToString();
     }
     protected string Make_JSON(SqlDataReader dr, int count ,StringBuilder myStringBuilder){
-        while(dr.Read() & count>0){
+        while(dr.Read() && count>0){
             myStringBuilder.Append( "{\"建檔\":\"" + dr[0].ToString().Substring(2,8)+                    
                     "\",\"設備名稱\":\"" +  dr[1].ToString() +
                     "\",\"設備種類\":\"" + dr[2].ToString() +
-                    "\",\"設備廠商\":\"" + dr[3].ToString() +
+                    // "\",\"設備廠商\":\"" + dr[3].ToString() +
                     "\",\"設備用途\":\"" + dr[4].ToString() +
                     "\",\"硬體\":\"" + dr[5].ToString() +
                     "\",\"申請\":\"" + dr[6].ToString() +
-                    "\",\"異動\":\"" + Button_check(dr[7].ToString()) +
+                    "\",\"異動\":\"" + Button_check(dr[7].ToString(), dr[3].ToString()) +
                     "\",\"位置\":\"" + dr[8].ToString() +
                     "\",\"OP\":\"" + OP_split(dr[9].ToString()));              
             if(count==1){
@@ -197,7 +205,7 @@ public partial class Device_DevEdit : System.Web.UI.Page
     protected string Multi_Sel(){
         string from = Request["From"];
         string to = Request["To"];
-        string sql = "SELECT COUNT(*) FROM [control].[dbo].[Device2] WHERE CreateDate between @from and @to";   
+        string sql = "SELECT COUNT(*) FROM [dbo].[Device2] WHERE CreateDate between @from and @to";   
         List<SqlParameter> pars = new List<SqlParameter>();
         pars.Add(new SqlParameter("from", from));
         pars.Add(new SqlParameter("to", to));
@@ -211,23 +219,25 @@ public partial class Device_DevEdit : System.Web.UI.Page
         cmd.Parameters.AddRange(pars.ToArray());
         SqlDataReader dr = cmd.ExecuteReader();
         int count = 0;        
-        if(dr.Read()) count = int.Parse(dr[0].ToString());
-        
-        cmd.CommandText = @"SELECT
+        //if(dr.Read()) count = int.Parse(dr[0].ToString());
+        if (dr.Read() && dr.FieldCount > 0) count = int.Parse(dr[0].ToString());
+
+        cmd.CommandText = string.Format(@"SELECT
                             convert(varchar, CreateDate, 111) as CreateDate
                             ,[HostName]
                             ,[HostClass]
-                            ,[Repair]  
+                            ,[PS]  
                             ,[Functions]
                             ,[Hw]  
                             ,[StaffName]                                  
                             ,[IO]                                                                               
                             ,CONCAT(w.區域名稱,'<br>', w.定位名稱) as area                                                                                 
                             ,[OP]                                                                              
-                            FROM [control].[dbo].[Device2] d left join [IDMS].dbo.定位設定 w 
+                            FROM [dbo].[Device2] d left join [IDMS].dbo.定位設定 w 
                             ON d.Xall=w.坐標X2 AND d.Yall=w.坐標Y2 AND 定位方式='坐標'
-                            WHERE CreateDate BETWEEN @from AND @to ";
-        cmd.CommandText += moreCon;
+                            WHERE CreateDate BETWEEN @from AND @to {0}
+                            ORDER BY CreateDate DESC", moreCon);
+   
         dr.Close();
         dr = cmd.ExecuteReader();
         StringBuilder myStringBuilder = new StringBuilder("[");

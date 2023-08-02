@@ -253,6 +253,7 @@
                         <asp:DropDownList id="PS" runat="server">
                             <asp:ListItem Selected="True" Value=""> </asp:ListItem>
                             <asp:ListItem Value="需填移入單"> 需填移入單 </asp:ListItem>
+                            <asp:ListItem Value="已填移入單"> 已填移入單 </asp:ListItem>
                             <asp:ListItem Value="不需填移入單－測試"> 不需填移入單－測試 </asp:ListItem>
                             <asp:ListItem Value="不需填移入單－暫放"> 不需填移入單－暫放 </asp:ListItem>
                             <asp:ListItem Value="不需填移入單－代管"> 不需填移入單－代管 </asp:ListItem>

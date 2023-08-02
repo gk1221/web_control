@@ -158,9 +158,9 @@ public partial class Control_DevEdit : System.Web.UI.Page
                                             ,concat(Month(CreateDate),'/',DAY([CreateDate]))      
                                             ,[StaffName]
                                             ,[HOSTNAME]
-                                            FROM [control].[dbo].[Device2]
+                                            FROM [dbo].[Device2]
                                             ORDER BY CreateDate DESC", Conn);
-        DataSet ds = RunQuery(cmd);
+        DataSet ds = RunQuery("Control", cmd);
         MenuHost.Items.Add(new ListItem("(請選擇)","0"));
         if (ds.Tables.Count > 0)
         {
@@ -179,11 +179,11 @@ public partial class Control_DevEdit : System.Web.UI.Page
         SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["ControlConnectionString"].ConnectionString);
         Conn.Open();
         
-		SqlCommand cmd = new SqlCommand(@"SELECT TOP(10) Repair, COUNT(*) as c FROM [control].[dbo].[Device2]
+		SqlCommand cmd = new SqlCommand(@"SELECT TOP(10) Repair, COUNT(*) as c FROM [dbo].[Device2]
                                             WHERE Repair<>'N/A'
                                             GROUP BY Repair
                                             ORDER BY c DESC", Conn);
-        DataSet ds = RunQuery(cmd);
+        DataSet ds = RunQuery("Control", cmd);
         MenuRepair.Items.Add(new ListItem("(無)","N/A"));
         if (ds.Tables.Count > 0)
         {
@@ -691,9 +691,9 @@ public partial class Control_DevEdit : System.Web.UI.Page
         cmd.Cancel(); cmd.Dispose(); Conn.Close(); Conn.Dispose();
     }
 
-    protected DataSet RunQuery(SqlCommand sqlQuery) //讀取DB資訊
+    protected DataSet RunQuery(string db, SqlCommand sqlQuery) //讀取DB資訊
     {
-        SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["IDMSConnectionString"].ConnectionString);
+        SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings[db+ "ConnectionString"].ConnectionString);
         SqlDataAdapter dbAdapter = new SqlDataAdapter();
         dbAdapter.SelectCommand = sqlQuery;
         sqlQuery.Connection = Conn;
