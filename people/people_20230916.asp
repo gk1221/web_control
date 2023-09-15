@@ -101,100 +101,23 @@ if DateOut="" and IO="O" then DateOut=DT(now,"yyyy/mm/dd")
 if TimeOut="" and IO="O" then TimeOut=DT(now,"hh:mi:ss")
 '異動-----------------------------------------------------------------------------------------------------------------------------------------
 if DBaction="a" or DBaction="u" then 
-		' ABC="C"
-		
-		' rs.open "select * from config where Kind='數值資訊組' and Item='" & Company & "'",connIDMS
-		' if not rs.eof then ABC="A"
-		' rs.close
-		
-		' rs.open "select Item from Config where Kind like '授權名單%' and Item like '%" & Company & "-" & Staff & "%'",conn
-		' if not rs.eof then 
-			' ABC=mid(rs(0),len(rs(0)))			
-		' end if
-		' rs.close
-		
 		ABC="C"
-		AbcMsg2=""
-		numNameMatched=0
-		numMatched=0
-		right1=false
-		right2=false
-		rs.open "SELECT dept,company,access,access_1f,access_2f FROM dbo.accesslist WHERE name = dbo.ConvertATUFunction(N'"& Staff & "');",conn
-		while not rs.eof
-			numNameMatched=numNameMatched+1
-			
-			if rs(0)=Company or rs(1)=Company then
-				numMatched=numMatched+1
-				
-				ABC=trim(rs(2))
-				if ABC="S" then
-					ABC="A"
-				end if
-				right1=rs(3)
-				right2=rs(4)				
-			end if
-			
-			AbcMsg2 = AbcMsg2 & "# " & rs(0)			
-			if trim(rs(1))<>"" then AbcMsg2 = AbcMsg2 & " " & rs(1)
-			AbcMsg2 = AbcMsg2 & " <" & Staff & "> "
-			AbcMsg2 = AbcMsg2 & rs(2) & " 類人員 "
-			if rs(3)=true and rs(4)=true then
-				AbcMsg2 = AbcMsg2 & "[1F,2F]"
-			elseif rs(3)=true then
-				AbcMsg2 = AbcMsg2 & "[1F]"
-			elseif rs(4)=true then
-				AbcMsg2 = AbcMsg2 & "[2F]"
-			else 
-				AbcMsg2 = AbcMsg2 & "[無申請樓層]"
-			end if			
-			AbcMsg2 = AbcMsg2 & "\n"
-			
-			rs.movenext
-		wend
+		
+		rs.open "select * from config where Kind='數值資訊組' and Item='" & Company & "'",connIDMS
+		if not rs.eof then ABC="A"
 		rs.close
 		
-		' response.write "<script language=""javascript"">" & vbcrlf
-		' response.write "	alert(""" & AbcMsg2 & """);" & vbcrlf	
-		' response.write "</script>" & vbcrlf
-							
-        ' AbcMsg=""
-		' if ABC="A" and (instr(1,Purpose,"A類人員")=0 or instr(1,Purpose,"B類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-			' or ABC="B" and (instr(1,Purpose,"B類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-			' or ABC="C" and (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) then
-			' AbcMsg=Company & "-" & Staff & "-" & ABC & "，請檢查您的授權方式是否設定錯誤!"	
-		' end if
-		
-		AbcMsg=""
-		if not (trim(request("chkChangPeopleClassForced"))="TRUE") then
-			if numNameMatched=0 then
-				if (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) then
-					AbcMsg= Staff & " 無機房進出權限申請紀錄，應為 C 類人員。\n\n請檢查您的授權方式設定，仍要 新增/修改 請勾選 強制設定人員權限類別。"
-				end if
-			elseif numMatched=1 then
-				if ((instr(1,FloorArea2,"1F")<>0 or instr(1,FloorArea2,"一機房")<>0 or instr(1,FloorArea2,"二機房")<>0) and right1=false _ 
-					or (instr(1,FloorArea2,"2F")<>0 or instr(1,FloorArea2,"三機房")<>0 or instr(1,FloorArea2,"四機房")<>0) and right2=false) _
-					and (instr(1,Purpose,"C類人員")<>0 and instr(1,Purpose,"A類人員")=0 and instr(1,Purpose,"B類人員")=0) then
-					' no op
-				elseif ABC="A" and (instr(1,Purpose,"A類人員")=0 or instr(1,Purpose,"B類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-					or ABC="B" and (instr(1,Purpose,"B類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-					or ABC="C" and (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) _
-					or (instr(1,FloorArea2,"1F")<>0 or instr(1,FloorArea2,"一機房")<>0 or instr(1,FloorArea2,"二機房")<>0) and right1=false _ 
-					or (instr(1,FloorArea2,"2F")<>0 or instr(1,FloorArea2,"三機房")<>0 or instr(1,FloorArea2,"四機房")<>0) and right2=false then
-					AbcMsg= AbcMsg2 & "\n請檢查您的授權方式設定，仍要 新增/修改 請勾選 強制設定人員權限類別。"
-				end if
-			else
-				AbcMsg= "非唯一/完全(姓名+單位)符合機房進出權限申請紀錄，請確認並使用 強制設定人員權限類別 登錄。\n\n" & AbcMsg2
-			end if
-
-			' if numMatched>1 then
-				' AbcMsg= AbcMsg2 & "多筆權限申請資料符合，請確認並使用 強制設定人員權限類別 登錄。"	
-			' elseif ABC="A" and (instr(1,Purpose,"A類人員")=0 or instr(1,Purpose,"B類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-				' or ABC="B" and (instr(1,Purpose,"B類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-				' or ABC="C" and (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) _
-				' or (instr(1,FloorArea2,"1F")<>0 or instr(1,FloorArea2,"一機房")<>0 or instr(1,FloorArea2,"二機房")<>0) and right1=false _ 
-				' or (instr(1,FloorArea2,"2F")<>0 or instr(1,FloorArea2,"三機房")<>0 or instr(1,FloorArea2,"四機房")<>0) and right2=false then
-				' AbcMsg= AbcMsg2 & "\n請檢查您的授權方式設定，仍要 新增/修改 請勾選 強制設定人員權限類別。"	
-			' end if
+		rs.open "select Item from Config where Kind like '授權名單%' and Item like '%" & Company & "-" & Staff & "%'",conn
+		if not rs.eof then 
+			ABC=mid(rs(0),len(rs(0)))			
+		end if
+		rs.close
+				
+        AbcMsg=""
+		if ABC="A" and (instr(1,Purpose,"A類人員")=0 or instr(1,Purpose,"B類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
+			or ABC="B" and (instr(1,Purpose,"B類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
+			or ABC="C" and (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) then
+			AbcMsg=Company & "-" & Staff & "-" & ABC & "，請檢查您的授權方式是否設定錯誤!"	
 		end if
 
 		if AbcMsg="" then
@@ -309,7 +232,7 @@ End Function
 		<td align="left" valign="middle"><div align="center" class="item">負責單位</div></td>
 		<td align="left" valign="middle">
 			<select name="selUnit" id="selUnit" size="1" class="option" language="javascript" onchange="Option_HTML('selMaintainer',this.value,'');">
-		
+				<option></option>
             <%  OutFormat="<option value=""#Item#"" #Sel#>#Item#</option>"
                 response.write GetConfig("IDMS","order by mark","數值資訊組","Item",Unit,"*",OutFormat,UnitA) 
             %>
@@ -444,7 +367,7 @@ End Function
 			</select>
 		</td>
 		<td class="item"><div align="center"><font color="blue">
-			<u style="cursor:pointer" onClick="alert('若外單位參觀機房,申請人填署內對口人員,負責人填中心對口人員或課長,而附註則填外單位領隊姓名 !');">附註說明</u>
+			<u style="cursor:pointer" onClick="alert('若外單位參觀機房,申請人填局內對口人員,負責人填中心對口人員或課長,而附註則填外單位領隊姓名 !');">附註說明</u>
 		</font></div></td>
 		<td><input name="txtMemo" type="text"  size="16" value="<%=Memo%>" /></td>
 	</tr>
@@ -681,11 +604,7 @@ End Function
 			<input name="txtDateOut" type="text"  value="<%=DateOut%>" size="10">
 			<input name="txtTimeOut" type="text"  value="<%=TimeOut%>" size="8">
 		</td>
-	</tr>	
-	<tr>		
-		<td colspan="8" align="left" valign="middle"><div align="right" class="item">
-		<input name="chkChangPeopleClassForced" type="checkbox" value="TRUE">強制設定人員權限類別</div></td> 		
-	</tr>	
+	</tr>
 <!---------------------------------------------------------------------------------------------------------------------------------------------------------------->
 	<input name="DBaction" type="hidden" value="<%=DBaction%>">
 	<input name="Serial" type="hidden" value="<%=Serial%>">	
@@ -735,23 +654,19 @@ if("<%=IO%>"=="O") window.open("outwarning.asp","_blank","width=220,height=340,r
 //------------------------------------------------
 
 function Option_HTML(which,Kind,other) { //選項變化
-
 	var str ;
 	
 	if (window.ActiveXObject) {  // IE
-	console.log("IE")
 		//http_request.setRequestHeader("Content-Type","application/x-www-form-urlencoded") ;	
 		http_request.open("POST","Lib/OptionHTML_outer.asp?which=" + which + "&Kind=" + Kind + "&other=" + other,false) ;		
 		http_request.send("") ;	
 		str=http_request.responseText ;				
 		e.elements[which].outerHTML=str ;
 	} else { // Edge, Chrome, ...
-	console.log("EDGE")
 		//http_request.setRequestHeader("Content-Type","application/x-www-form-urlencoded") ;	
 		http_request.open("POST","Lib/OptionHTML_inner.asp?which=" + which + "&Kind=" + Kind + "&other=" + other,false) ;		
 		http_request.send("") ;	
-		str=http_request.responseText ;		
-		
+		str=http_request.responseText ;				
 		e.elements[which].innerHTML=str ;
 	}
 
@@ -971,7 +886,7 @@ if("<%=IO%>" != "O") {	//登入或修改
 	var regex_endspace = /(\s+)$/;
 	document.getElementById("txtWorkArea").value = txt1.replace(regex_newline, ' ').replace(regex_tab, '').replace(regex_endspace, '');
 	document.getElementById("txtProcess").value = txt2.replace(regex_tab, '').replace(regex_endspace, '');
-
+	
 	e.submit();
 }			
 </script>

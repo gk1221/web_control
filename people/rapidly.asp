@@ -1,5 +1,5 @@
 <!-- #include file="..\..\connDB\conn.ini" -->
-<!-- #include file="..\..\Lib\GetID.inc" -->
+<!-- #include file="..\..\Lib\GetID2.inc" -->
 <!-- #include file="..\..\Lib\GetConfig.inc" -->
 <% 
 set conn=Server.CreateObject("adodb.connection") : conn.Open strControl
@@ -118,7 +118,7 @@ End Function
 		rs.close
 		if i>0 then SQL=SQL & ")"
     case "mic"
-        rs.open "select * from Config where kind='資訊中心'",connIDMS
+        rs.open "select * from Config where kind='數值資訊組'",connIDMS
 		i=0 : SQL=""
 		while not rs.eof
 			unit=rs(1) : AuthorityNo="A"

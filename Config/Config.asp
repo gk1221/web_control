@@ -1,5 +1,5 @@
 <!-- #include file="..\..\connDB\conn.ini" -->
-<!-- #include file="..\..\Lib\GetID.inc" -->
+<!-- #include file="..\..\Lib\GetID2.inc" -->
 <%
 Dim connControl  : Set connControl=Server.CreateObject("ADODB.Connection")  : connControl.Open strControl
 set rs=server.createobject("ADODB.recordset")

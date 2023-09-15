@@ -143,7 +143,7 @@ End Function
     <select name="selOP" size="1">
         <option value=""></option>
 	    <%	dim opA : OutFormat="<option value=""#Item#"" #Sel#>#Item#</option>"
-            response.write GetConfig("IDMS","order by mark","電腦操作課","Item",OP,"*",OutFormat,opA)
+            response.write GetConfig("IDMS","order by mark","作業管理科","Item",OP,"*",OutFormat,opA)
 	    %>  
     </select>　　&nbsp;
     <input type="button" value="大量登入 / 大量登出 / 取消登出" class="butn" onClick="set_login();">　&nbsp;

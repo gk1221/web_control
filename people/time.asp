@@ -1,5 +1,5 @@
 <!-- #include file="..\..\connDB\conn.ini" -->
-<!-- #include file="..\..\Lib\GetID.inc" -->
+<!-- #include file="..\..\Lib\GetID2.inc" -->
 <!-- #include file="..\..\Lib\DT.inc" -->
 <%
 set condb=Server.CreateObject("adodb.connection")

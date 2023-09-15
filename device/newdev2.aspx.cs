@@ -111,7 +111,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
         SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["IDMSConnectionString"].ConnectionString);
         Conn.Open();
         string sql = @"SELECT COUNT(*) FROM Config a1, Config a2
-                       WHERE a1.Kind = a2.Item AND a2.Kind='資訊中心' AND a1.Kind<>' ' ";
+                       WHERE a1.Kind = a2.Item AND a2.Kind='數值資訊組' AND a1.Kind<>' ' ";
 
 		SqlCommand cmd = new SqlCommand(sql,Conn);
         SqlDataReader dr = null;
@@ -123,8 +123,8 @@ public partial class Control_DevEdit : System.Web.UI.Page
 
         cmd.CommandText = @"SELECT a1.kind, a1.Item
                             FROM Config a1, Config a2
-                            WHERE a1.Kind = a2.Item AND a2.Kind='資訊中心' AND a1.Kind<>' '
-                            ORDER BY a1.kind, a1.Memo DESC";
+                            WHERE a1.Kind = a2.Item AND a2.Kind='數值資訊組' AND a1.Kind<>' '
+                            ORDER BY a2.mark ASC, a1.Memo DESC";
         dr.Close();
         dr = cmd.ExecuteReader();
         //[["系統課","001"], ["網管課","002"],.....]
@@ -209,7 +209,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
             CreateDate.Text = HttpUtility.HtmlEncode(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")); 
             List<SqlParameter> pars = new List<SqlParameter>();            
             string SQL=GetInsConDevSQL(id, pars);            //獲取新增至設備資料表語法
-            string SQL2=String.Format("新增[設備2]：： ({0}, {1}, {2}, {3}, {4}, {5})", //生命履歷語法
+            string SQL2=String.Format("新增 ：： ({0}, {1}, {2}, {3}, {4}, {5})", //生命履歷語法
                                 HostName.Text.Trim(),
                                 HostClass.SelectedValue.Replace(" ", ""),
                                 Functions.Text.Trim(),
@@ -246,7 +246,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
             
             try
             {
-                InsLifeSQL("修改2 [" + HostName.Text + "] ：： " + GetUpdate(int.Parse(DevID.Text), "Life"));
+                InsLifeSQL("修改 [" + HostName.Text + "] ：： " + GetUpdate(int.Parse(DevID.Text), "Life"));
                 ExecDbSQL("UPDATE [device2] SET " + GetUpdate(int.Parse(DevID.Text),"SQL", pars) + " WHERE [DevID]= @devid", pars); 
                 Msg.Text = "<script>alert('修改完成');window.location.replace('newdev2.aspx?DevID="+DevID.Text+" ')</script>";
             }
@@ -273,7 +273,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
                                 StaffName.Text.Trim(),
                                 IO_Change_Button(Button_check()),
                                 Get_Area(xy[0], xy[1], "區域名稱"));
-        InsLifeSQL("刪除[設備2]．[" + HostName.Text.Trim() + "]，原始資料：" + SQL2);
+        InsLifeSQL("刪除 [" + HostName.Text.Trim() + "]，原始資料：" + SQL2);
         cmd.ExecuteNonQuery();
         cmd.Cancel(); cmd.Dispose(); Conn.Close(); Conn.Dispose();
         Msg.Text = "<script>alert('已刪除!');window.close();window.location.replace('newdevlist.aspx');</script>";
@@ -290,7 +290,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
                                 StaffName.Text.Trim(),
                                 IO_Change_Button(Button_check()),
                                 Get_Area(xy[0], xy[1], "區域名稱"));
-        string out2 = "刪除[設備]．[" + HostName.Text.Trim() + "]，原始資料：" + SQL2;
+        string out2 = "刪除 [" + HostName.Text.Trim() + "]，原始資料：" + SQL2;
         Msg.Text = "<script>alert('"+out2+"');</script>";
         Page.Controls.Add(Msg);
     }

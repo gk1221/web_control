@@ -31,7 +31,7 @@ End Function
 <body>
 <p align="center">
   <table width="100%"><tr>
-	<td align="center"><font size="5"><b>　　　　資訊中心機房廠商夜間加班人員名冊</b></font></td>
+	<td align="center"><font size="5"><b>　　　　數值資訊組機房廠商夜間加班人員名冊</b></font></td>
 	<td align="right"><font size="2"><%=DT(now,"yyyy/mm/dd")%></font></td>
   </tr></table>
 </p>

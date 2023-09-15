@@ -1,5 +1,5 @@
 <!-- #include file="..\..\connDB\conn.ini" -->
-<!-- #include file="..\..\Lib\GetID.inc" -->
+<!-- #include file="..\..\Lib\GetID2.inc" -->
 <%
 set condb=Server.CreateObject("adodb.connection")     
 condb.open strControl 
@@ -197,6 +197,7 @@ rs.close
 			str_workarea_i = Replace(str_workarea_i, "¡F", " ")
 			str_workarea_i = Replace(str_workarea_i, "¡A", " ")
 			str_workarea_i = Replace(str_workarea_i, "¡B", " ")
+			str_workarea_i = Replace(str_workarea_i, vbNewLine, " ")
 			str_workareas_i = Split(str_workarea_i," ")			
 			for j = 0 to ubound(str_workareas_i)
 				if InStr(str_workareas, str_workareas_i(j)) = 0 then
