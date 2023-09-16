@@ -35,7 +35,9 @@ case "selCompany"	'申請單位
 	SQL="select distinct 申請單位 from people where 進入日期>='" & DT(now-365*3,"yyyy/mm/dd") & "'"
 	select case Kind
 	case "All"	'(全部)
-		SQL=SQL & " order by 申請單位"		
+		SQL=SQL & " order by 申請單位"
+	case "Adm"	'(署單位)
+		SQL="select dept from accesslist  group by dept order by COUNT(dept) asc"			
 	case "Link"	'(關聯)
 		SQL=SQL & " and 負責人='" & other & "' order by 申請單位"
 	case "No"	'(次數)
@@ -73,8 +75,12 @@ case "selCompany"	'申請單位
 	end select
 case "selStaff"	'申請人
 	'selHTML="<select name=""" & which & """ size=""1"" class=""option"" onChange=""Staff_KeyIn(this.value);"">"
-	selHTML=""
-	SQL="select distinct 申請人 from people where 申請單位='" & Kind & "' and 進入日期>='" & DT(now-365*3,"yyyy/mm/dd") & "' order by 申請人"
+	'selHTML=""
+	if other="Adm" then
+		SQL = "select name from accesslist  where dept='" & Kind & "'"
+	else
+		SQL="select distinct 申請人 from people where 申請單位='" & Kind & "' and 進入日期>='" & DT(now-365*3,"yyyy/mm/dd") & "' order by 申請人"
+	end if
 end select	
 
 if which<>"selMaintainer" then

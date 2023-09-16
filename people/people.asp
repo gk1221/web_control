@@ -348,7 +348,8 @@ End Function
 		<td align="left" valign="middle">
 			<select name="selComKind" id="selComKind" size="1" class="option" onChange="Option_HTML('selCompany',this.value,selMaintainer.value);">
 				<option value="All">(全部)</option>
-				<option value="Self">(自填)</option>				
+				<option value="Self">(自填)</option>
+				<option value="Adm">(署單位)</option>			
 				<option value="Link">(關聯)</option>
 				<option value="No">(次數)</option>			
 				<option value="Else">(未歸類)</option>
@@ -391,7 +392,7 @@ End Function
 				<option value="ㄥ">單位(ㄥ)</option>
 				<option value="ㄦ">單位(ㄦ)</option>				
 			</select>
-			<select name="selCompany" id="selCompany" size="1" class="option" onchange="Option_HTML('selStaff',this.value,'');">                
+			<select name="selCompany" id="selCompany" size="1" class="option" onchange="Option_HTML('selStaff',this.value, selComKind.value);">                
 				<option value=""></option>
 			<%	rs.open "select distinct 申請單位 from people where 進入日期>='" & DT(now-365*3,"yyyy/mm/dd") & "' order by 申請單位",conn
 				selected=""			
