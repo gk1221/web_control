@@ -311,7 +311,8 @@ End Function
 			<select name="selUnit" id="selUnit" size="1" class="option" language="javascript" onchange="Option_HTML('selMaintainer',this.value,'');">
 		
             <%  OutFormat="<option value=""#Item#"" #Sel#>#Item#</option>"
-                response.write GetConfig("IDMS","order by mark","數值資訊組","Item",Unit,"*",OutFormat,UnitA) 
+                response.write GetConfig("IDMS","order by mark","數值資訊組","Item",Unit,"*",OutFormat,UnitA)
+				response.write GetConfig("IDMS","order by mark","署內單位","Item",Unit,"*",OutFormat,UnitA)
             %>
 			</select>
 		</td>
