@@ -111,7 +111,7 @@ public partial class Control_DevEdit : System.Web.UI.Page
         SqlConnection Conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["IDMSConnectionString"].ConnectionString);
         Conn.Open();
         string sql = @"SELECT COUNT(*) FROM Config a1, Config a2
-                       WHERE a1.Kind = a2.Item AND a2.Kind='數值資訊組' AND a1.Kind<>' ' ";
+                       WHERE a1.Kind = a2.Item AND (a2.Kind='署內單位' OR a2.Kind='數值資訊組' ) AND a1.Kind<>'署本部' AND a1.Kind<>'署測站' AND a1.Kind<>' '";
 
 		SqlCommand cmd = new SqlCommand(sql,Conn);
         SqlDataReader dr = null;
@@ -123,8 +123,8 @@ public partial class Control_DevEdit : System.Web.UI.Page
 
         cmd.CommandText = @"SELECT a1.kind, a1.Item
                             FROM Config a1, Config a2
-                            WHERE a1.Kind = a2.Item AND a2.Kind='數值資訊組' AND a1.Kind<>' '
-                            ORDER BY a2.mark ASC, a1.Memo DESC";
+                            WHERE a1.Kind = a2.Item AND (a2.Kind='署內單位' OR a2.Kind='數值資訊組' ) AND a1.Kind<>'署本部' AND a1.Kind<>'署測站' AND a1.Kind<>' '
+                            ORDER BY LEN(a1.kind)desc, a2.mark ASC, a1.Memo DESC";
         dr.Close();
         dr = cmd.ExecuteReader();
         //[["系統課","001"], ["網管課","002"],.....]
