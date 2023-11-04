@@ -484,7 +484,7 @@ MaintainScrollPositionOnPostback="true" Debug="false" Trace="false" %>
             Text="　修　改　"
             onclick="BtnEdit_Click"
             class="btn btn-warning mx-2"
-            OnClientClick="return confirm('您確定要修改這筆資料嗎？')"
+            OnClientClick="return confirm('您確定要修改這筆資料嗎？\n\n請確認此筆修改與權限申請單內容是否相符!')"
           /><br />
           <asp:Button
             ID="BtnDel"

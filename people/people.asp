@@ -186,15 +186,8 @@ if DBaction="a" or DBaction="u" then
 				AbcMsg= "非唯一/完全(姓名+單位)符合機房進出權限申請紀錄，請確認並使用 強制設定人員權限類別 登錄。\n\n" & AbcMsg2
 			end if
 
-			' if numMatched>1 then
-				' AbcMsg= AbcMsg2 & "多筆權限申請資料符合，請確認並使用 強制設定人員權限類別 登錄。"	
-			' elseif ABC="A" and (instr(1,Purpose,"A類人員")=0 or instr(1,Purpose,"B類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-				' or ABC="B" and (instr(1,Purpose,"B類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"C類人員")<>0) _ 
-				' or ABC="C" and (instr(1,Purpose,"C類人員")=0 or instr(1,Purpose,"A類人員")<>0 or instr(1,Purpose,"B類人員")<>0) _
-				' or (instr(1,FloorArea2,"1F")<>0 or instr(1,FloorArea2,"一機房")<>0 or instr(1,FloorArea2,"二機房")<>0) and right1=false _ 
-				' or (instr(1,FloorArea2,"2F")<>0 or instr(1,FloorArea2,"三機房")<>0 or instr(1,FloorArea2,"四機房")<>0) and right2=false then
-				' AbcMsg= AbcMsg2 & "\n請檢查您的授權方式設定，仍要 新增/修改 請勾選 強制設定人員權限類別。"	
-			' end if
+		else
+			conn.execute "insert into Forcein values('" & Staff & "', '"&instr(1,FloorArea2,"1F")&"', '"& instr(1,FloorArea2,"2F") &"', '" & DateIn& " "&TimeIn & "')"
 		end if
 
 		if AbcMsg="" then

@@ -266,7 +266,7 @@ public partial class Control_PeoEdit : System.Web.UI.Page
         {
 
         } //空白確認
-        else if (UID == "C207" || UID == "C250" || UID == "C147")
+        else 
         {
             List<SqlParameter> pars = new List<SqlParameter>();
             pars.Add(new SqlParameter("@ID", ID.Text));
@@ -276,7 +276,7 @@ public partial class Control_PeoEdit : System.Web.UI.Page
                 Trace.Write("修改 [" + Name.Text + "] ：： " + GetUpdate(ID.Text));
                 ExecDbSQL("UPDATE [accesslist] SET " + GetUpdate(ID.Text, pars) + " WHERE [ID]= @ID", pars);
                 UpdateDate.Text = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                Msg.Text = "<script>alert('修改完成')</script>";
+                Msg.Text = "<script>alert('修改完成\\n\\n請確認此筆修改與權限申請單內容是否相符!\\n修改紀錄請參考「生命履歷」')</script>";
             }
             catch (System.Exception ex)
             {
@@ -284,13 +284,13 @@ public partial class Control_PeoEdit : System.Web.UI.Page
                 Msg.Text = "<script>alert('修改失敗，請再試一次');</script>";
             }
         }//限定SSM小組或科資安才能修改
-        else
-        {
-            Trace.Warn("no right!");
-            Trace.Warn(UID);
-            Msg.Text = "<script>alert('您沒有權限編輯人員資料!\\n請通知科資安或SSM小組進行修改');</script>";
+        // else
+        // {
+        //     Trace.Warn("no right!");
+        //     Trace.Warn(UID);
+        //     Msg.Text = "<script>alert('您沒有權限編輯人員資料!\\n請通知科資安或SSM小組進行修改');</script>";
 
-        }
+        // }
         Page.Controls.Add(Msg);
     }
     protected void BtnDel_Click(object sender, EventArgs e) //刪除按鈕
